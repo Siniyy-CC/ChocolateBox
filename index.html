@@ -9,17 +9,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --color-red: #8E3535;   /* 古典紅 */
-            --color-cream: #fdfbf7; /* 米白 */
-            --color-green: #2F4F4F; /* 古典墨綠 */
-            --color-gold: #c5a96f;  /* 復古啞光金 */
+            /* --- 配色方案調整 --- */
+            --color-red: #8E3535;   /* 古典紅 (外盒) */
+            --color-green: #1a3c34; /* 深墨綠 (內盒背景) - 加深了顏色更顯高級 */
+            --color-cream: #f4f1ea; /* 米白 (文字卡片) */
+            --color-gold: #c5a96f;  /* 復古金 */
             --box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            --choco-gradient: linear-gradient(135deg, #3e2723, #5d4037);
+            --choco-gradient: linear-gradient(135deg, #4e342e, #3e2723);
         }
 
         body {
             margin: 0;
-            background-color: #1a1a1a;
+            background-color: #0f0f0f;
             font-family: 'Cinzel', serif;
             overflow-x: hidden;
             display: flex;
@@ -32,7 +33,7 @@
         #cover-layer {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #1a1a1a;
+            background-color: #0f0f0f;
             z-index: 100;
             display: flex;
             flex-direction: column;
@@ -43,9 +44,9 @@
 
         .gift-box {
             width: 280px; height: 350px;
-            background-color: var(--color-red);
+            background-color: var(--color-red); /* 外盒維持紅色 */
             border: 2px solid var(--color-gold);
-            box-shadow: 0 0 50px rgba(142, 53, 53, 0.3);
+            box-shadow: 0 0 50px rgba(142, 53, 53, 0.2);
             position: relative;
             display: flex;
             justify-content: center;
@@ -53,8 +54,8 @@
             flex-direction: column;
         }
 
-        .ribbon-v { position: absolute; top: 0; bottom: 0; left: 50%; width: 40px; transform: translateX(-50%); background: var(--color-gold); opacity: 0.8; }
-        .ribbon-h { position: absolute; left: 0; right: 0; top: 40%; height: 40px; background: var(--color-gold); opacity: 0.8; }
+        .ribbon-v { position: absolute; top: 0; bottom: 0; left: 50%; width: 40px; transform: translateX(-50%); background: var(--color-gold); opacity: 0.9; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        .ribbon-h { position: absolute; left: 0; right: 0; top: 40%; height: 40px; background: var(--color-gold); opacity: 0.9; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
         
         .cover-title {
             z-index: 2;
@@ -63,8 +64,9 @@
             text-align: center;
             text-shadow: 0 2px 10px rgba(0,0,0,0.8);
             margin-bottom: 20px;
-            background-color: rgba(142, 53, 53, 0.9);
-            padding: 10px;
+            background-color: var(--color-red);
+            padding: 5px 15px;
+            border: 1px solid var(--color-gold);
         }
 
         #open-btn {
@@ -78,6 +80,7 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-weight: bold;
         }
         #open-btn:hover { transform: scale(1.05); background: var(--color-gold); color: #fff; }
 
@@ -85,21 +88,28 @@
         #inner-layer {
             position: relative;
             width: 90%; max-width: 400px;
-            background-color: var(--color-red);
-            padding: 20px;
+            
+            /* 【修改重點】內盒背景改為墨綠色，營造紅綠對比 */
+            background-color: var(--color-green);
+            
+            padding: 25px;
             border-radius: 4px;
             box-shadow: var(--box-shadow);
-            border: 8px solid var(--color-gold);
+            
+            /* 邊框維持金色，增加層次 */
+            border: 6px solid var(--color-gold);
+            outline: 6px solid var(--color-red); /* 再加一層紅邊，更有禮盒感 */
+            
             opacity: 0;
             transition: opacity 2s ease;
         }
         
+        /* 增加一點復古紋理 */
         #inner-layer::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1)), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 25%, var(--color-green) 25%, var(--color-green) 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1));
-            background-position: 0 0, 10px 10px;
+            background-image: radial-gradient(var(--color-gold) 1px, transparent 1px);
             background-size: 20px 20px;
-            opacity: 0.4;
+            opacity: 0.1;
             pointer-events: none;
         }
 
@@ -110,89 +120,72 @@
             gap: 15px;
             position: relative;
             z-index: 1;
-            padding-bottom: 20px; /* 為彩蛋留點空間 */
         }
 
+        /* 【修改重點】中間文字格改為米白底、紅字，提亮畫面 */
         .grid-text {
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
-            color: var(--color-gold);
+            
+            background-color: var(--color-cream); /* 米白卡片 */
+            color: var(--color-red); /* 紅色字體 */
+            
             font-weight: bold;
             font-family: 'Cinzel', serif;
             letter-spacing: 1px;
-            font-size: 0.9rem;
-            border: 1px dashed rgba(197, 169, 111, 0.4);
+            font-size: 0.8rem;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            border-radius: 2px;
+            padding: 5px;
         }
 
-        /* --- 巧克力基礎樣式 (默認圓形) --- */
+        /* 巧克力樣式 */
         .chocolate {
             width: 100%;
             aspect-ratio: 1;
             background: var(--choco-gradient);
             border-radius: 50%;
-            box-shadow: 2px 5px 10px rgba(0,0,0,0.5), inset 2px 2px 5px rgba(255,255,255,0.1);
+            box-shadow: 3px 5px 10px rgba(0,0,0,0.4), inset 2px 2px 5px rgba(255,255,255,0.1);
             cursor: pointer;
             transition: transform 0.3s;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
+            
+            /* 如果你有圖片，可以取消下面這行的註釋，把圖片放進去 */
+            /* background-image: url('你的圖片.png'); background-size: cover; */
         }
         .chocolate:hover { transform: scale(1.05); }
         
-        /* 默認圓形的金箔裝飾 */
+        /* 金箔裝飾 (純CSS模式下顯示，如果有圖片建議隱藏) */
         .chocolate:not(.shape-heart):not(.shape-flower)::after {
-            content: ''; width: 30%; height: 30%;
+            content: ''; width: 25%; height: 25%;
             background-color: var(--color-gold);
             border-radius: 50%;
-            opacity: 0.8;
+            opacity: 0.9;
             box-shadow: 0 0 5px var(--color-gold);
         }
 
-        /* --- 【修復】方形變體 --- */
-        .shape-square { border-radius: 8px; }
-
-        /* --- 【修復】心形變體 (使用偽元素拼接，兼容性好) --- */
-        .shape-heart {
-            background: none; /* 隱藏基礎背景 */
-            box-shadow: none; /* 隱藏基礎陰影 */
-            overflow: visible;
-        }
-        .shape-heart::before,
-        .shape-heart::after {
-            content: "";
-            position: absolute;
-            top: 10%; left: 15%;
-            width: 70%; height: 110%;
-            background: var(--choco-gradient);
-            border-radius: 50px 50px 0 0;
-            transform: rotate(-45deg);
-            transform-origin: 0 100%;
+        /* 形狀變體 */
+        .shape-square { border-radius: 6px; }
+        
+        .shape-heart { background: none; box-shadow: none; overflow: visible; }
+        .shape-heart::before, .shape-heart::after {
+            content: ""; position: absolute; top: 15%; left: 15%; width: 70%; height: 110%;
+            background: var(--choco-gradient); border-radius: 50px 50px 0 0;
+            transform: rotate(-45deg); transform-origin: 0 100%;
             box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1);
         }
-        .shape-heart::after {
-            left: auto; right: 15%;
-            transform: rotate(45deg);
-            transform-origin: 100% 100%;
-            box-shadow: inset -2px 2px 5px rgba(255,255,255,0.1);
-        }
+        .shape-heart::after { left: auto; right: 15%; transform: rotate(45deg); transform-origin: 100% 100%; }
 
-        /* --- 【修復】花形變體 (雙層方塊旋轉，兼容性好) --- */
-        .shape-flower {
-            border-radius: 8px;
-            position: relative;
-        }
+        .shape-flower { border-radius: 8px; position: relative; }
         .shape-flower::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--choco-gradient);
-            border-radius: 8px;
-            transform: rotate(45deg);
-            z-index: -1;
-            box-shadow: 2px 5px 10px rgba(0,0,0,0.3), inset 2px 2px 5px rgba(255,255,255,0.1);
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--choco-gradient); border-radius: 8px; transform: rotate(45deg); z-index: -1;
+            box-shadow: 3px 5px 10px rgba(0,0,0,0.3);
         }
 
         /* 被吃掉後的狀態 */
@@ -204,12 +197,12 @@
         /* --- 3. 彈窗 --- */
         #modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85); /* 背景加深 */
             z-index: 200;
             display: none;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
         .modal-content {
             background-color: var(--color-cream);
@@ -217,48 +210,59 @@
             width: 80%; max-width: 350px;
             padding: 30px;
             border-radius: 2px;
-            border: 4px solid var(--color-red);
+            border: 4px solid var(--color-red); /* 紅框 */
+            outline: 2px solid var(--color-gold); /* 金邊 */
             text-align: center;
-            box-shadow: 0 0 30px var(--color-gold);
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
             position: relative;
         }
-        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #888; }
-        .choco-flavor { color: var(--color-red); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 10px; font-weight: bold; }
-        .work-title { font-family: 'Noto Serif TC', serif; font-size: 1.5rem; margin-bottom: 15px; color: #1a1a1a; font-weight: bold; }
-        .work-intro { font-family: 'Noto Serif TC', serif; font-size: 0.9rem; line-height: 1.6; color: #555; margin-bottom: 25px; text-align: left; }
+        .close-btn { position: absolute; top: 5px; right: 10px; font-size: 28px; cursor: pointer; color: var(--color-red); }
+        .choco-flavor { color: var(--color-red); font-size: 1rem; letter-spacing: 2px; margin-bottom: 15px; font-weight: bold; border-bottom: 1px dashed var(--color-gold); padding-bottom: 10px; display: inline-block;}
+        .work-title { font-family: 'Noto Serif TC', serif; font-size: 1.4rem; margin-bottom: 15px; color: #000; font-weight: bold; }
+        .work-intro { font-family: 'Noto Serif TC', serif; font-size: 0.95rem; line-height: 1.8; color: #555; margin-bottom: 30px; text-align: justify; }
         
         #taste-btn {
             display: inline-block;
-            background-color: var(--color-red);
-            color: white;
-            padding: 10px 30px;
+            background-color: var(--color-green); /* 按鈕改綠色 */
+            color: var(--color-cream);
+            padding: 12px 35px;
             text-decoration: none;
             font-family: 'Noto Serif TC', serif;
             font-weight: bold;
-            border-radius: 20px;
+            border-radius: 30px;
             transition: 0.3s;
+            border: 1px solid var(--color-gold);
         }
-        #taste-btn:hover { background-color: var(--color-gold); color: #000; }
+        #taste-btn:hover { background-color: var(--color-red); transform: translateY(-2px); }
 
         /* --- 4. 彩蛋 --- */
         #easter-egg {
             display: none;
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 90%; /* 增加寬度防止換行過多 */
-            text-align: center;
-            color: var(--color-cream);
-            z-index: 50;
-            pointer-events: none; /* 防止擋住鼠標 */
+            width: 100%; text-align: center; color: var(--color-cream); z-index: 50;
         }
         .egg-text {
             font-family: 'Noto Serif TC', serif;
             font-size: 1.2rem;
             line-height: 2;
             text-shadow: 0 0 10px var(--color-gold);
-            animation: glow 3s infinite alternate;
-            white-space: nowrap; /* 讓文字儘量不換行 */
+            margin-bottom: 30px;
         }
-        @keyframes glow { from { text-shadow: 0 0 5px var(--color-gold); opacity: 0.8; } to { text-shadow: 0 0 20px var(--color-gold), 0 0 10px #fff; opacity: 1; } }
+        
+        /* 【新增】再吃一次按鈕 */
+        #reset-btn {
+            padding: 10px 25px;
+            background: transparent;
+            color: var(--color-gold);
+            border: 1px solid var(--color-gold);
+            font-family: 'Noto Serif TC', serif;
+            cursor: pointer;
+            font-size: 0.9rem;
+            border-radius: 20px;
+            transition: all 0.3s;
+            pointer-events: auto; /* 確保可點擊 */
+        }
+        #reset-btn:hover { background: var(--color-gold); color: #000; }
 
     </style>
 </head>
@@ -288,6 +292,7 @@
                 Merry Christmas<br>
                 NoFear × QingRong
             </div>
+            <button id="reset-btn" onclick="resetGame()">再吃一次！</button>
         </div>
     </div>
 
@@ -307,7 +312,7 @@
         // ==========================================
         const works = [
             // 第一排
-            { id: 1, shape: 'shape-heart', flavor: '海鹽焦糖', title: '《西西弗斯在歌舞伎町》', intro: '簡介...', link: 'https://yukinashi.lofter.com/post/73dc7b51_34cb4f25a?incantation=rzHFtEBZLtWH' },
+            { id: 1, shape: 'shape-heart', flavor: '海鹽焦糖', title: '《西西弗斯在歌舞伎町》', intro: '寂静，圆满。', link: 'https://yukinashi.lofter.com/post/73dc7b51_34cb4f25a?incantation=rzHFtEBZLtWH' },
             { id: 2, shape: 'shape-square', flavor: '濃縮黑咖', title: '《作品二標題》', intro: '簡介...', link: '#' },
             { id: 3, shape: '', flavor: '榛果牛奶', title: '《作品三標題》', intro: '簡介...', link: '#' },
             // 第二排
@@ -331,9 +336,7 @@
         const tasteBtn = document.getElementById('taste-btn');
         let currentChocoId = null;
 
-        // 【重要】每次刷新頁面都重置，確保所有巧克力都在
-        localStorage.clear(); 
-
+        // 初始化：生成格子
         function initGrid() {
             const renderItems = [
                 works[0], works[1], works[2],
@@ -351,10 +354,13 @@
                     cell.className = 'grid-text';
                     cell.innerHTML = item.content;
                 } else {
-                    // 這裡將形狀類名加在前面，確保優先級
+                    // 如果有自定義圖片，邏輯在這裡
+                    // <--- 這裡如果未來有圖片，代碼會自動適配
+                    
                     cell.className = `${item.shape || ''} chocolate`;
                     cell.dataset.id = item.id;
                     
+                    // 讀取狀態：是否已吃
                     if (localStorage.getItem(`eaten_${item.id}`)) {
                         cell.classList.add('eaten');
                     }
@@ -380,11 +386,11 @@
             modal.style.display = 'none';
         }
 
+        // 開盒動畫
         document.getElementById('open-btn').addEventListener('click', function() {
             const audio = document.getElementById('bgm');
             audio.volume = 0.5;
-            // 嘗試播放，如果失敗（例如沒有上傳音頻文件）則忽略錯誤
-            audio.play().catch(() => {}); 
+            audio.play().catch(() => {});
 
             const cover = document.getElementById('cover-layer');
             const inner = document.getElementById('inner-layer');
@@ -395,16 +401,22 @@
             }, 500);
         });
 
+        // 品嚐點擊
         tasteBtn.addEventListener('click', function() {
             if (currentChocoId !== null) {
+                // 1. 記錄狀態
                 localStorage.setItem(`eaten_${currentChocoId}`, 'true');
+                // 2. 關閉彈窗
                 closeModal();
+                // 3. 視覺隱藏
                 const chocoEl = document.querySelector(`.chocolate[data-id="${currentChocoId}"]`);
                 if (chocoEl) chocoEl.classList.add('eaten');
+                // 4. 檢查是否觸發彩蛋
                 checkEasterEgg();
             }
         });
 
+        // 檢查彩蛋
         function checkEasterEgg() {
             let allEaten = true;
             works.forEach(w => {
@@ -415,9 +427,27 @@
 
             if (allEaten) {
                 document.getElementById('easter-egg').style.display = 'block';
-                gridContainer.style.opacity = '0.2'; // 讓背景更暗一點，突出文字
+                // 背景變暗，突出彩蛋
+                gridContainer.style.opacity = '0.1';
+                gridContainer.style.pointerEvents = 'none';
             }
         }
+        
+        // 【新增】重置遊戲
+        function resetGame() {
+            if(confirm("確定要重置所有巧克力狀態嗎？")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // 【新增】防止BFCache導致返回不刷新的問題
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                console.log("Page restored from cache.");
+                initGrid(); // 強制重新渲染
+            }
+        });
         
         initGrid();
 
