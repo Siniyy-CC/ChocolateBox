@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ars Amatoria - 聖誕禮盒</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-red: #8E3535;   /* 古典紅 */
+            --color-cream: #fdfbf7; /* 米白 */
+            --color-green: #2F4F4F; /* 墨綠 */
+            --color-gold: #D4AF37;  /* 金色 */
+            --box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        body {
+            margin: 0;
+            background-color: #1a1a1a;
+            font-family: 'Cinzel', serif;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- 1. 封面：未拆封的禮盒 --- */
+        #cover-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #1a1a1a;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1.5s ease-in-out, opacity 1s ease;
+        }
+
+        .gift-box {
+            width: 280px; height: 350px;
+            background-color: var(--color-red);
+            border: 2px solid var(--color-gold);
+            box-shadow: 0 0 50px rgba(142, 53, 53, 0.3);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* 金色絲帶十字 */
+        .ribbon-v { position: absolute; top: 0; bottom: 0; left: 50%; width: 40px; transform: translateX(-50%); background: var(--color-gold); opacity: 0.8; }
+        .ribbon-h { position: absolute; left: 0; right: 0; top: 40%; height: 40px; background: var(--color-gold); opacity: 0.8; }
+        
+        .cover-title {
+            z-index: 2;
+            color: var(--color-cream);
+            font-size: 2rem;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            margin-bottom: 20px;
+            background-color: rgba(142, 53, 53, 0.9); /* 增加背景防止絲帶干擾文字 */
+            padding: 10px;
+        }
+
+        #open-btn {
+            z-index: 2;
+            padding: 12px 40px;
+            background: var(--color-cream);
+            color: var(--color-red);
+            border: 2px solid var(--color-gold);
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        #open-btn:hover { transform: scale(1.05); background: var(--color-gold); color: #fff; }
+
+        /* --- 2. 內部：巧克力棋盤 --- */
+        #inner-layer {
+            position: relative;
+            width: 90%; max-width: 400px;
+            background-color: var(--color-red);
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: var(--box-shadow);
+            border: 8px solid var(--color-gold);
+            opacity: 0; /* 默認隱藏，動畫顯示 */
+            transition: opacity 2s ease;
+        }
+        
+        /* 內部裝飾紋理 */
+        #inner-layer::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1)), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 25%, #8E3535 25%, #8E3535 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1));
+            background-position: 0 0, 10px 10px;
+            background-size: 20px 20px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .choco-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 中間的文字格 */
+        .grid-text {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--color-gold);
+            font-weight: bold;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            border: 1px dashed rgba(212, 175, 55, 0.3);
+        }
+
+        /* 巧克力樣式 */
+        .chocolate {
+            width: 100%;
+            aspect-ratio: 1; /* 保持正方形 */
+            background: linear-gradient(135deg, #3e2723, #5d4037);
+            border-radius: 50%; /* 默認圓形 */
+            box-shadow: 2px 5px 10px rgba(0,0,0,0.5), inset 2px 2px 5px rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .chocolate:hover { transform: scale(1.1); }
+        
+        /* 金箔裝飾 */
+        .chocolate::after {
+            content: ''; width: 30%; height: 30%;
+            background-color: var(--color-gold);
+            border-radius: 50%;
+            opacity: 0.8;
+            box-shadow: 0 0 5px var(--color-gold);
+        }
+
+        /* 不同形狀變體 */
+        .shape-square { border-radius: 5px; }
+        .shape-heart { border-radius: 50%; clip-path: path('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'); transform: scale(1.2); }
+        .shape-flower { clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+
+        /* 被吃掉後的狀態 */
+        .chocolate.eaten {
+            visibility: hidden; /* 隱藏但佔位 */
+            pointer-events: none;
+        }
+
+        /* --- 3. 彈窗 --- */
+        #modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: var(--color-cream);
+            color: #333;
+            width: 80%; max-width: 350px;
+            padding: 30px;
+            border-radius: 2px;
+            border: 4px solid var(--color-red);
+            text-align: center;
+            box-shadow: 0 0 30px var(--color-gold);
+            position: relative;
+        }
+        .close-btn { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #888; }
+        .choco-flavor { color: var(--color-red); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 10px; font-weight: bold; }
+        .work-title { font-family: 'Noto Serif TC', serif; font-size: 1.5rem; margin-bottom: 15px; color: #1a1a1a; font-weight: bold; }
+        .work-intro { font-family: 'Noto Serif TC', serif; font-size: 0.9rem; line-height: 1.6; color: #555; margin-bottom: 25px; text-align: left; }
+        
+        #taste-btn {
+            display: inline-block;
+            background-color: var(--color-red);
+            color: white;
+            padding: 10px 30px;
+            text-decoration: none;
+            font-family: 'Noto Serif TC', serif;
+            font-weight: bold;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        #taste-btn:hover { background-color: var(--color-gold); color: #000; }
+
+        /* --- 4. 彩蛋 --- */
+        #easter-egg {
+            display: none;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%;
+            text-align: center;
+            color: var(--color-cream);
+            z-index: 50;
+        }
+        .egg-text {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.2rem;
+            line-height: 2;
+            text-shadow: 0 0 10px var(--color-gold);
+            animation: glow 3s infinite alternate;
+        }
+        @keyframes glow { from { text-shadow: 0 0 5px var(--color-gold); opacity: 0.8; } to { text-shadow: 0 0 20px var(--color-gold), 0 0 10px #fff; opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <audio id="bgm" loop>
+        <source src="bgm.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="cover-layer">
+        <div class="gift-box">
+            <div class="ribbon-v"></div>
+            <div class="ribbon-h"></div>
+            <div class="cover-title">Ars Amatoria</div>
+            <button id="open-btn">OPEN</button>
+        </div>
+    </div>
+
+    <div id="inner-layer">
+        <div class="choco-grid" id="grid-container">
+            </div>
+        
+        <div id="easter-egg">
+            <div class="egg-text">
+                所有的甜蜜都已入喉<br>
+                感謝您品嚐這份關於愛的藝術<br>
+                <br>
+                Merry Christmas<br>
+                NoFear × QingRong
+            </div>
+        </div>
+    </div>
+
+    <div id="modal">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal()">×</div>
+            <div class="choco-flavor" id="modal-flavor">FLAVOR</div>
+            <div class="work-title" id="modal-title">TITLE</div>
+            <div class="work-intro" id="modal-intro">Intro...</div>
+            <a href="#" id="taste-btn" target="_blank">品嚐！</a>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 🍬 配置區域：請在這裡填寫老師們的數據 🍬
+        // ==========================================
+        const works = [
+            // 第一排 (3個)
+            { id: 1, shape: 'shape-heart', flavor: '海鹽焦糖', title: '《西西弗斯在歌舞伎町》', intro: '沒有一刻比現在更寂靜，沒有一刻比現在更圓滿。', link: 'https://yukinashi.lofter.com/post/73dc7b51_34cb4f25a?incantation=rzn1r19Qh6wL' },
+            { id: 2, shape: 'shape-square', flavor: '濃縮黑咖', title: '《作品二標題》', intro: '苦澀中帶有回甘，一場關於暗戀的獨白...', link: 'https://你的作品鏈接2.com' },
+            { id: 3, shape: '', flavor: '榛果牛奶', title: '《作品三標題》', intro: '絲滑柔順，溫暖的冬日戀歌...', link: 'https://你的作品鏈接3.com' },
+            
+            // 第二排 (左1個) - 中間是文字 "Ars Amatoria"
+            { id: 4, shape: 'shape-flower', flavor: '薄荷脆片', title: '《作品四標題》', intro: '清涼刺激，意想不到的展開...', link: 'https://你的作品鏈接4.com' },
+            
+            // 第二排 (右1個)
+            { id: 5, shape: 'shape-square', flavor: '覆盆子酒心', title: '《作品五標題》', intro: '微醺的愛意，危險又迷人...', link: 'https://你的作品鏈接5.com' },
+
+            // 第三排 (左1個) - 中間是文字 "NoFear & QingRong"
+            { id: 6, shape: '', flavor: '白巧克力', title: '《作品六標題》', intro: '純潔無瑕，最初的心動...', link: 'https://你的作品鏈接6.com' },
+
+            // 第三排 (右1個)
+            { id: 7, shape: 'shape-heart', flavor: '抹茶生巧', title: '《作品七標題》', intro: '微苦後的清香，綿長的餘韻...', link: 'https://你的作品鏈接7.com' },
+
+            // 第四排 (3個)
+            { id: 8, shape: 'shape-flower', flavor: '辣椒松露', title: '《作品八標題》', intro: '熱烈、刺激，燃燒的激情...', link: 'https://你的作品鏈接8.com' },
+            { id: 9, shape: 'shape-square', flavor: '朗姆提子', title: '《作品九標題》', intro: '歲月沉澱後的醇香...', link: 'https://你的作品鏈接9.com' },
+            { id: 10, shape: '', flavor: '伯爵紅茶', title: '《作品十標題》', intro: '優雅的英式下午茶，細水長流...', link: 'https://你的作品鏈接10.com' }
+        ];
+
+        // ==========================================
+        // 🔧 邏輯區域 (不需要修改)
+        // ==========================================
+        
+        const gridContainer = document.getElementById('grid-container');
+        const modal = document.getElementById('modal');
+        const tasteBtn = document.getElementById('taste-btn');
+        let currentChocoId = null;
+
+        // 初始化：生成格子
+        function initGrid() {
+            // 格子順序映射：
+            // 0,1,2 (第一排)
+            // 3 (第二排左), TEXT1, 4 (第二排右)
+            // 5 (第三排左), TEXT2, 6 (第三排右)
+            // 7,8,9 (第四排)
+            
+            // 構建渲染數組
+            const renderItems = [
+                works[0], works[1], works[2],
+                works[3], { type: 'text', content: 'Ars<br>Amatoria' }, works[4],
+                works[5], { type: 'text', content: 'NoFear<br>&<br>QingRong' }, works[6],
+                works[7], works[8], works[9]
+            ];
+
+            renderItems.forEach(item => {
+                const cell = document.createElement('div');
+                
+                if (item.type === 'text') {
+                    cell.className = 'grid-text';
+                    cell.innerHTML = item.content;
+                } else {
+                    // 這是巧克力
+                    cell.className = `chocolate ${item.shape || ''}`;
+                    cell.dataset.id = item.id;
+                    
+                    // 檢查是否吃過
+                    if (localStorage.getItem(`eaten_${item.id}`)) {
+                        cell.classList.add('eaten');
+                    }
+
+                    // 點擊事件
+                    cell.onclick = () => openChoco(item);
+                }
+                gridContainer.appendChild(cell);
+            });
+
+            checkEasterEgg();
+        }
+
+        // 打開彈窗
+        function openChoco(item) {
+            currentChocoId = item.id;
+            document.getElementById('modal-flavor').innerText = item.flavor;
+            document.getElementById('modal-title').innerText = item.title;
+            document.getElementById('modal-intro').innerText = item.intro;
+            tasteBtn.href = item.link;
+            modal.style.display = 'flex';
+        }
+
+        // 關閉彈窗
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // 點擊拆開禮盒
+        document.getElementById('open-btn').addEventListener('click', function() {
+            // 播放音樂
+            const audio = document.getElementById('bgm');
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log("Audio play failed:", e));
+
+            // 動畫
+            const cover = document.getElementById('cover-layer');
+            const inner = document.getElementById('inner-layer');
+            
+            cover.style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+                inner.style.opacity = '1';
+            }, 500);
+        });
+
+        // 監聽"品嚐"點擊
+        tasteBtn.addEventListener('click', function() {
+            if (currentChocoId !== null) {
+                // 記錄已吃
+                localStorage.setItem(`eaten_${currentChocoId}`, 'true');
+                // 關閉彈窗
+                closeModal();
+                // 隱藏該巧克力 (視覺上)
+                const chocoEl = document.querySelector(`.chocolate[data-id="${currentChocoId}"]`);
+                if (chocoEl) chocoEl.classList.add('eaten');
+                
+                // 這裡會跳轉鏈接，當用戶返回時，initGrid會重新運行並隱藏它
+            }
+        });
+
+        // 檢查彩蛋 (所有都被吃了)
+        function checkEasterEgg() {
+            let allEaten = true;
+            works.forEach(w => {
+                if (!localStorage.getItem(`eaten_${w.id}`)) {
+                    allEaten = false;
+                }
+            });
+
+            if (allEaten) {
+                document.getElementById('easter-egg').style.display = 'block';
+                // 可以選擇隱藏格子或調暗
+                gridContainer.style.opacity = '0.3';
+            }
+        }
+        
+        // 測試用：清除緩存 (在控制台輸入 clearGame() 即可重置)
+        window.clearGame = function() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // 啟動
+        initGrid();
+
+    </script>
+</body>
+</html>
