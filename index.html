@@ -9,10 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* --- 【新配色】古典聖誕色調 --- */
             --color-red: #8E3535;   /* 古典紅 */
             --color-cream: #fdfbf7; /* 米白 */
-            --color-green: #2F4F4F; /* 墨綠 */
-            --color-gold: #D4AF37;  /* 金色 */
+            --color-green: #2F4F4F; /* 古典墨綠 (新增) */
+            --color-gold: #c5a96f;  /* 復古啞光金 (調整) */
             --box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
@@ -94,13 +95,14 @@
             transition: opacity 2s ease;
         }
         
-        /* 內部裝飾紋理 */
+        /* 【修改】內部裝飾紋理改為墨綠色，增加聖誕感 */
         #inner-layer::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1)), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 25%, #8E3535 25%, #8E3535 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1));
+            /* 使用 var(--color-green) */
+            background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1)), repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 25%, var(--color-green) 25%, var(--color-green) 75%, rgba(0,0,0,0.1) 75%, rgba(0,0,0,0.1));
             background-position: 0 0, 10px 10px;
             background-size: 20px 20px;
-            opacity: 0.3;
+            opacity: 0.4;
             pointer-events: none;
         }
 
@@ -124,7 +126,8 @@
             font-family: 'Cinzel', serif;
             letter-spacing: 1px;
             font-size: 0.9rem;
-            border: 1px dashed rgba(212, 175, 55, 0.3);
+            /* 邊框顏色調整 */
+            border: 1px dashed rgba(197, 169, 111, 0.4);
         }
 
         /* 巧克力樣式 */
@@ -268,7 +271,7 @@
         // ==========================================
         const works = [
             // 第一排 (3個)
-            { id: 1, shape: 'shape-heart', flavor: '海鹽焦糖', title: '《西西弗斯在歌舞伎町》', intro: '沒有一刻比現在更寂靜，沒有一刻比現在更圓滿。', link: 'https://yukinashi.lofter.com/post/73dc7b51_34cb4f25a?incantation=rzn1r19Qh6wL' },
+            { id: 1, shape: 'shape-heart', flavor: '海鹽焦糖', title: '《西西弗斯在歌舞伎町》', intro: '這裡是作品簡介，介紹一下這顆巧克力的口感和文風...', link: 'https://yukinashi.lofter.com/post/73dc7b51_34cb4f25a?incantation=rzHFtEBZLtWH' },
             { id: 2, shape: 'shape-square', flavor: '濃縮黑咖', title: '《作品二標題》', intro: '苦澀中帶有回甘，一場關於暗戀的獨白...', link: 'https://你的作品鏈接2.com' },
             { id: 3, shape: '', flavor: '榛果牛奶', title: '《作品三標題》', intro: '絲滑柔順，溫暖的冬日戀歌...', link: 'https://你的作品鏈接3.com' },
             
@@ -291,7 +294,7 @@
         ];
 
         // ==========================================
-        // 🔧 邏輯區域 (不需要修改)
+        // 🔧 邏輯區域
         // ==========================================
         
         const gridContainer = document.getElementById('grid-container');
@@ -299,21 +302,20 @@
         const tasteBtn = document.getElementById('taste-btn');
         let currentChocoId = null;
 
+        // 【新增】自動重置遊戲狀態：每次刷新頁面都清除記錄
+        // 這樣保證每次打開都是滿滿一盒巧克力
+        localStorage.clear(); 
+
         // 初始化：生成格子
         function initGrid() {
-            // 格子順序映射：
-            // 0,1,2 (第一排)
-            // 3 (第二排左), TEXT1, 4 (第二排右)
-            // 5 (第三排左), TEXT2, 6 (第三排右)
-            // 7,8,9 (第四排)
-            
-            // 構建渲染數組
             const renderItems = [
                 works[0], works[1], works[2],
                 works[3], { type: 'text', content: 'Ars<br>Amatoria' }, works[4],
                 works[5], { type: 'text', content: 'NoFear<br>&<br>QingRong' }, works[6],
                 works[7], works[8], works[9]
             ];
+
+            gridContainer.innerHTML = ''; // 清空容器
 
             renderItems.forEach(item => {
                 const cell = document.createElement('div');
@@ -383,7 +385,8 @@
                 const chocoEl = document.querySelector(`.chocolate[data-id="${currentChocoId}"]`);
                 if (chocoEl) chocoEl.classList.add('eaten');
                 
-                // 這裡會跳轉鏈接，當用戶返回時，initGrid會重新運行並隱藏它
+                // 檢查彩蛋
+                checkEasterEgg();
             }
         });
 
@@ -398,17 +401,10 @@
 
             if (allEaten) {
                 document.getElementById('easter-egg').style.display = 'block';
-                // 可以選擇隱藏格子或調暗
                 gridContainer.style.opacity = '0.3';
             }
         }
         
-        // 測試用：清除緩存 (在控制台輸入 clearGame() 即可重置)
-        window.clearGame = function() {
-            localStorage.clear();
-            location.reload();
-        }
-
         // 啟動
         initGrid();
 
