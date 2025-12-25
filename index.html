@@ -9,11 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* --- 配色方案調整 --- */
-            --color-red: #8E3535;   /* 古典紅 (外盒) */
-            --color-green: #1a3c34; /* 深墨綠 (內盒背景) - 加深了顏色更顯高級 */
-            --color-cream: #f4f1ea; /* 米白 (文字卡片) */
-            --color-gold: #c5a96f;  /* 復古金 */
+            --color-red: #8E3535;   
+            --color-green: #1a3c34; 
+            --color-cream: #f4f1ea; 
+            --color-gold: #c5a96f;  
             --box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             --choco-gradient: linear-gradient(135deg, #4e342e, #3e2723);
         }
@@ -29,7 +28,7 @@
             min-height: 100vh;
         }
 
-        /* --- 1. 封面：未拆封的禮盒 --- */
+        /* --- 1. 封面層 --- */
         #cover-layer {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -39,72 +38,70 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            gap: 30px; /* 調整間距 */
             transition: transform 1.5s ease-in-out, opacity 1s ease;
         }
 
-        .gift-box {
-            width: 280px; height: 350px;
-            background-color: var(--color-red); /* 外盒維持紅色 */
-            border: 2px solid var(--color-gold);
-            box-shadow: 0 0 50px rgba(142, 53, 53, 0.2);
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+        .cover-title {
+            color: var(--color-gold);
+            font-size: 2.5rem;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(197, 169, 111, 0.5);
+            letter-spacing: 2px;
         }
 
-        .ribbon-v { position: absolute; top: 0; bottom: 0; left: 50%; width: 40px; transform: translateX(-50%); background: var(--color-gold); opacity: 0.9; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
-        .ribbon-h { position: absolute; left: 0; right: 0; top: 40%; height: 40px; background: var(--color-gold); opacity: 0.9; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
-        
-        .cover-title {
-            z-index: 2;
-            color: var(--color-cream);
-            font-size: 2rem;
-            text-align: center;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-            margin-bottom: 20px;
-            background-color: var(--color-red);
-            padding: 5px 15px;
-            border: 1px solid var(--color-gold);
+        /* 【修改】禮盒樣式：使用圖片 */
+        .gift-box {
+            width: 300px; /* 根據圖片比例稍微調整大小 */
+            height: 300px;
+            /* 這裡引入你的禮盒圖片 */
+            background-image: url('gift_box.png'); 
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            /* 移除之前的 CSS 樣式 */
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            /* 添加一個濾鏡陰影讓它更立體 */
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
         }
+
+        /* 舊的絲帶樣式已移除 */
 
         #open-btn {
-            z-index: 2;
-            padding: 12px 40px;
-            background: var(--color-cream);
-            color: var(--color-red);
-            border: 2px solid var(--color-gold);
+            padding: 12px 50px;
+            background: transparent;
+            color: var(--color-cream);
+            border: 1px solid var(--color-cream);
             font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            font-weight: bold;
+            letter-spacing: 3px;
+            border-radius: 50px;
         }
-        #open-btn:hover { transform: scale(1.05); background: var(--color-gold); color: #fff; }
+        #open-btn:hover { 
+            background: var(--color-gold); 
+            color: #0f0f0f; 
+            border-color: var(--color-gold);
+            box-shadow: 0 0 20px var(--color-gold);
+        }
 
-        /* --- 2. 內部：巧克力棋盤 --- */
+        /* --- 2. 內部層 --- */
         #inner-layer {
             position: relative;
             width: 90%; max-width: 400px;
-            
-            /* 【修改重點】內盒背景改為墨綠色，營造紅綠對比 */
             background-color: var(--color-green);
-            
             padding: 25px;
             border-radius: 4px;
             box-shadow: var(--box-shadow);
-            
-            /* 邊框維持金色，增加層次 */
             border: 6px solid var(--color-gold);
-            outline: 6px solid var(--color-red); /* 再加一層紅邊，更有禮盒感 */
-            
+            outline: 6px solid var(--color-red); 
             opacity: 0;
             transition: opacity 2s ease;
         }
         
-        /* 增加一點復古紋理 */
         #inner-layer::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background-image: radial-gradient(var(--color-gold) 1px, transparent 1px);
@@ -117,21 +114,18 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(4, 1fr);
-            gap: 15px;
+            gap: 20px; /* 增加一點間距讓手繪圖更舒展 */
             position: relative;
             z-index: 1;
         }
 
-        /* 【修改重點】中間文字格改為米白底、紅字，提亮畫面 */
         .grid-text {
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
-            
-            background-color: var(--color-cream); /* 米白卡片 */
-            color: var(--color-red); /* 紅色字體 */
-            
+            background-color: var(--color-cream); 
+            color: var(--color-red); 
             font-weight: bold;
             font-family: 'Cinzel', serif;
             letter-spacing: 1px;
@@ -141,37 +135,51 @@
             padding: 5px;
         }
 
-        /* 巧克力樣式 */
+        /* --- 巧克力通用樣式 --- */
         .chocolate {
             width: 100%;
             aspect-ratio: 1;
-            background: var(--choco-gradient);
-            border-radius: 50%;
-            box-shadow: 3px 5px 10px rgba(0,0,0,0.4), inset 2px 2px 5px rgba(255,255,255,0.1);
             cursor: pointer;
             transition: transform 0.3s;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            
-            /* 如果你有圖片，可以取消下面這行的註釋，把圖片放進去 */
-            /* background-image: url('你的圖片.png'); background-size: cover; */
+            /* 確保圖片模式下居中且不重複 */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
         .chocolate:hover { transform: scale(1.05); }
-        
-        /* 金箔裝飾 (純CSS模式下顯示，如果有圖片建議隱藏) */
-        .chocolate:not(.shape-heart):not(.shape-flower)::after {
+
+        /* --- CSS 繪製的巧克力樣式 (僅在沒有圖片時生效) --- */
+        .chocolate.css-choco {
+             background: var(--choco-gradient);
+             border-radius: 50%;
+             box-shadow: 3px 5px 10px rgba(0,0,0,0.4), inset 2px 2px 5px rgba(255,255,255,0.1);
+        }
+        /* CSS 金點 */
+        .chocolate.css-choco:not(.shape-heart):not(.shape-flower)::after {
             content: ''; width: 25%; height: 25%;
             background-color: var(--color-gold);
-            border-radius: 50%;
-            opacity: 0.9;
-            box-shadow: 0 0 5px var(--color-gold);
+            border-radius: 50%; opacity: 0.9; box-shadow: 0 0 5px var(--color-gold);
         }
 
-        /* 形狀變體 */
+        /* --- 【修改】手繪圖片巧克力的特殊樣式 --- */
+        /* 當巧克力使用圖片時，移除 CSS 的背景、陰影和圓角，確保圖片原樣顯示 */
+        .chocolate.img-choco {
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            /* 可以加一點濾鏡陰影讓它更立體 */
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4));
+        }
+        /* 隱藏圖片模式下的 CSS 金點 */
+        .chocolate.img-choco::after { display: none !important; }
+
+
+        /* CSS 形狀變體 */
         .shape-square { border-radius: 6px; }
-        
         .shape-heart { background: none; box-shadow: none; overflow: visible; }
         .shape-heart::before, .shape-heart::after {
             content: ""; position: absolute; top: 15%; left: 15%; width: 70%; height: 110%;
@@ -180,7 +188,6 @@
             box-shadow: inset 2px 2px 5px rgba(255,255,255,0.1);
         }
         .shape-heart::after { left: auto; right: 15%; transform: rotate(45deg); transform-origin: 100% 100%; }
-
         .shape-flower { border-radius: 8px; position: relative; }
         .shape-flower::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -188,16 +195,12 @@
             box-shadow: 3px 5px 10px rgba(0,0,0,0.3);
         }
 
-        /* 被吃掉後的狀態 */
-        .chocolate.eaten {
-            visibility: hidden;
-            pointer-events: none;
-        }
+        .chocolate.eaten { visibility: hidden; pointer-events: none; }
 
         /* --- 3. 彈窗 --- */
         #modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); /* 背景加深 */
+            background: rgba(0,0,0,0.85); 
             z-index: 200;
             display: none;
             justify-content: center;
@@ -210,8 +213,8 @@
             width: 80%; max-width: 350px;
             padding: 30px;
             border-radius: 2px;
-            border: 4px solid var(--color-red); /* 紅框 */
-            outline: 2px solid var(--color-gold); /* 金邊 */
+            border: 4px solid var(--color-red); 
+            outline: 2px solid var(--color-gold); 
             text-align: center;
             box-shadow: 0 0 30px rgba(0,0,0,0.5);
             position: relative;
@@ -223,7 +226,7 @@
         
         #taste-btn {
             display: inline-block;
-            background-color: var(--color-green); /* 按鈕改綠色 */
+            background-color: var(--color-green); 
             color: var(--color-cream);
             padding: 12px 35px;
             text-decoration: none;
@@ -249,7 +252,6 @@
             margin-bottom: 30px;
         }
         
-        /* 【新增】再吃一次按鈕 */
         #reset-btn {
             padding: 10px 25px;
             background: transparent;
@@ -260,7 +262,7 @@
             font-size: 0.9rem;
             border-radius: 20px;
             transition: all 0.3s;
-            pointer-events: auto; /* 確保可點擊 */
+            pointer-events: auto; 
         }
         #reset-btn:hover { background: var(--color-gold); color: #000; }
 
@@ -273,12 +275,9 @@
     </audio>
 
     <div id="cover-layer">
-        <div class="gift-box">
-            <div class="ribbon-v"></div>
-            <div class="ribbon-h"></div>
-            <div class="cover-title">Ars Amatoria</div>
-            <button id="open-btn">OPEN</button>
-        </div>
+        <div class="cover-title">Ars Amatoria</div>
+        <div class="gift-box"></div>
+        <button id="open-btn">點擊拆開</button>
     </div>
 
     <div id="inner-layer">
@@ -312,8 +311,10 @@
         // ==========================================
         const works = [
             // 第一排
-            { id: 1, shape: 'shape-heart', flavor: '海鹽焦糖', title: '《西西弗斯在歌舞伎町》', intro: '寂静，圆满。', link: 'https://yukinashi.lofter.com/post/73dc7b51_34cb4f25a?incantation=rzHFtEBZLtWH' },
-            { id: 2, shape: 'shape-square', flavor: '濃縮黑咖', title: '《作品二標題》', intro: '簡介...', link: '#' },
+            // 【修改】ID 1 和 2 使用了你的手繪圖
+            // imgSrc: '你的圖片文件名.png', flavor: '圖片上的文字'
+            { id: 1, imgSrc: 'choco_cafe.png', flavor: 'Café Praliné', title: '《作品一標題》', intro: '簡介...', link: '#' },
+            { id: 2, imgSrc: 'choco_pistache.png', flavor: 'Pistache', title: '《作品二標題》', intro: '簡介...', link: '#' },
             { id: 3, shape: '', flavor: '榛果牛奶', title: '《作品三標題》', intro: '簡介...', link: '#' },
             // 第二排
             { id: 4, shape: 'shape-flower', flavor: '薄荷脆片', title: '《作品四標題》', intro: '簡介...', link: '#' },
@@ -336,7 +337,8 @@
         const tasteBtn = document.getElementById('taste-btn');
         let currentChocoId = null;
 
-        // 初始化：生成格子
+        localStorage.clear(); 
+
         function initGrid() {
             const renderItems = [
                 works[0], works[1], works[2],
@@ -354,13 +356,18 @@
                     cell.className = 'grid-text';
                     cell.innerHTML = item.content;
                 } else {
-                    // 如果有自定義圖片，邏輯在這裡
-                    // <--- 這裡如果未來有圖片，代碼會自動適配
-                    
-                    cell.className = `${item.shape || ''} chocolate`;
                     cell.dataset.id = item.id;
+
+                    // 【修改】判斷是使用圖片還是 CSS
+                    if (item.imgSrc) {
+                        // 使用圖片：添加 img-choco 類，並設置背景圖
+                        cell.className = `chocolate img-choco`;
+                        cell.style.backgroundImage = `url('${item.imgSrc}')`;
+                    } else {
+                        // 使用 CSS：添加 css-choco 類和形狀類
+                        cell.className = `${item.shape || ''} chocolate css-choco`;
+                    }
                     
-                    // 讀取狀態：是否已吃
                     if (localStorage.getItem(`eaten_${item.id}`)) {
                         cell.classList.add('eaten');
                     }
@@ -386,11 +393,16 @@
             modal.style.display = 'none';
         }
 
-        // 開盒動畫
         document.getElementById('open-btn').addEventListener('click', function() {
             const audio = document.getElementById('bgm');
             audio.volume = 0.5;
-            audio.play().catch(() => {});
+            
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Audio autoplay blocked");
+                });
+            }
 
             const cover = document.getElementById('cover-layer');
             const inner = document.getElementById('inner-layer');
@@ -401,22 +413,16 @@
             }, 500);
         });
 
-        // 品嚐點擊
         tasteBtn.addEventListener('click', function() {
             if (currentChocoId !== null) {
-                // 1. 記錄狀態
                 localStorage.setItem(`eaten_${currentChocoId}`, 'true');
-                // 2. 關閉彈窗
                 closeModal();
-                // 3. 視覺隱藏
                 const chocoEl = document.querySelector(`.chocolate[data-id="${currentChocoId}"]`);
                 if (chocoEl) chocoEl.classList.add('eaten');
-                // 4. 檢查是否觸發彩蛋
                 checkEasterEgg();
             }
         });
 
-        // 檢查彩蛋
         function checkEasterEgg() {
             let allEaten = true;
             works.forEach(w => {
@@ -427,13 +433,11 @@
 
             if (allEaten) {
                 document.getElementById('easter-egg').style.display = 'block';
-                // 背景變暗，突出彩蛋
-                gridContainer.style.opacity = '0.1';
+                gridContainer.style.opacity = '0.2';
                 gridContainer.style.pointerEvents = 'none';
             }
         }
         
-        // 【新增】重置遊戲
         function resetGame() {
             if(confirm("確定要重置所有巧克力狀態嗎？")) {
                 localStorage.clear();
@@ -441,11 +445,9 @@
             }
         }
 
-        // 【新增】防止BFCache導致返回不刷新的問題
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
-                console.log("Page restored from cache.");
-                initGrid(); // 強制重新渲染
+                initGrid();
             }
         });
         
